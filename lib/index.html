@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Message</title><style>html,body {
+            height: 100%;
+        }
+        #example {
+            line-height: 40px; background-color: rgb(20, 159, 64); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center;
+        }
+        #show {
+            text-align: center;
+        }
+        #effect {
+            border: 1px solid #eee; padding: 5px; text-align: center
+        }
+        #remove {
+            text-align: center;
+        }
+        #parentId {
+            width: 200px; height: 200px; position: relative;
+        }
+        .center {
+            text-align: center;
+        }</style></head><body><div class="center">direction from &nbsp;&nbsp;<select id="effect"><option value="top">top</option><option value="bottom">bottom</option></select></div><div id="example">click me create Message</div><br><div style="text-align: center"><a href="https://github.com/eightfeet/Message">Documents</a></div><script type="text/javascript" src="index.js"></script></body><script>var newMessage = new ___Message___({
+        directionFrom: 'top', // 底部位置
+        style: { 
+            wrap: {
+                top: 'auto'
+            },
+            main: {
+                backgroundColor: 'red'
+            }
+        }
+    });
+
+    var btn = document.getElementById('example');
+    var effect = 'top';
+    var effectDom = document.getElementById('effect');
+    var fromtop = {top: '10%'};
+    var frombottom = {bottom: '10%'};
+
+    effectDom.onchange = function(e) {
+        effect = e.target.value
+    }
+
+    function create(msg){ 
+        newMessage.state.directionFrom = effect;
+        if (effect === 'top') {
+            newMessage.state.style.wrap = fromtop;
+        }
+
+        if (effect === 'bottom') {
+            newMessage.state.style.wrap = frombottom;
+        }
+        
+        return newMessage.create(msg || 'message!').then(function(){
+            console.log('then do...');
+        });
+    }
+
+    btn.onclick = function(){
+        create(new Date().toLocaleTimeString());
+    }</script></html>
