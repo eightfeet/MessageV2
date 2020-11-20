@@ -4,7 +4,7 @@ import { createDom, removeDom } from './htmlFactory';
 import { onceTransitionEnd } from './webAnimationClub';
 import { createInlineStyles } from './inlineStyle';
 
-interface Parameters {
+export interface Parameters {
     /**
      * messageId 不传自动生成 message + 时间戳 + 100以内的随机数
      * @type {string}
