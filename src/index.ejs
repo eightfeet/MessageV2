@@ -79,7 +79,7 @@
     }
 
     btn.onclick = function(){
-        create(new Date().toLocaleTimeString());
+        create(`<div style="color: yellow" onClick="alert(111)">${new Date().toLocaleTimeString()}</div>`);
     }
 
 </script>

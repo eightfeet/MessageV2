@@ -1,3 +1,5 @@
+import saferInnerHtml from "./saferInnerHtml";
+
 const isPC = !navigator.userAgent.match(
     /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
 );
@@ -72,9 +74,10 @@ export function createDom(
             reject('function createDom: params "dom" or "target" not found.');
             return;
         }
+        const saferDom = saferInnerHtml(dom);
         const hasTarget = document.getElementById(target);
         if (hasTarget) {
-            hasTarget.innerHTML = dom;
+            hasTarget.innerHTML = saferDom;
             return;
         }
         const div = document.createElement('div');
@@ -84,13 +87,13 @@ export function createDom(
         if (parentIdDom) {
             parentIdDom.appendChild(div);
             const targetDom = document.getElementById(target);
-            targetDom.innerHTML = dom;
+            targetDom.innerHTML = saferDom;
             resolve(parentIdDom);
             return;
         }
         document.body.appendChild(div);
         const targetDom = document.getElementById(target);
-        targetDom.innerHTML = dom;
+        targetDom.innerHTML = saferDom;
         resolve(parentIdDom);
     });
 }
@@ -104,7 +107,7 @@ export function createDom(
  * @param {string} target
  */
 export function removeDom(target: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         if (!target) {
             reject('function removeDom: params "target" not found.');
             return;

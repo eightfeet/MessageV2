@@ -4,7 +4,8 @@ if (window.Promise === undefined) {
 
 import Message, { Parameters } from './Message';
 import { createInlineStyles } from './inlineStyle';
+import saferInnerHtml from './saferInnerHtml';
 export default Message;
-export {createInlineStyles}
+export {createInlineStyles, saferInnerHtml}
 
 export type MessageParameters = Parameters;
