@@ -14,7 +14,7 @@ export declare function createDom(dom: string, target: string, parentId: string,
  * @export
  * @param {string} target
  */
-export declare function removeDom(target: string): Promise<unknown>;
+export declare function removeDom(target: string): Promise<void>;
 /**
  *
  * html模板编与样式绑定，使用html模板时需要用到

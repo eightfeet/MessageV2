@@ -66,7 +66,7 @@ declare class Message {
      * @description 移除message
      * @memberof Message
      */
-    protected remove: () => Promise<unknown>;
+    protected remove: () => Promise<void>;
     /**
      *
      * 显示message
