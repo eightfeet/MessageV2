@@ -47,6 +47,10 @@ export interface Parameters {
      * @memberof Parameters
      */
     emBase?: number;
+    /**
+     * 是否显示
+     */
+    display?: boolean;
 }
 
 
@@ -84,6 +88,7 @@ class Message {
             directionFrom,
             parentId,
             emBase,
+            display: false,
         };
     }
 
@@ -108,27 +113,31 @@ class Message {
 
         const { top, bottom, ...other } = wrap || {};
         const msgPosition = getMsgTopAndBottom((top as string), (bottom as string));
-
-        await createDom(
-            `<div class="${s.wrap}"><div class="${s.message}"
-			style="position: ${parentIdDom ? 'absolute' : 'fixed'}; ${createInlineStyles(other) || ''}
-				top:${msgPosition.top}; bottom:${msgPosition.bottom};
-				z-index: ${zIndex};
-			">
-				<div class="${s.messagecontent}" style="${createInlineStyles(main) || ''} position: static;">
-					${content}
-				</div>
-            </div></div>`,
-            id,
-            parentId,
-            emBase
-        );
+        if (!this.state.display) {
+            await createDom(
+                `<div class="${s.wrap}"><div class="${s.message}"
+                style="position: ${parentIdDom ? 'absolute' : 'fixed'}; ${createInlineStyles(other) || ''}
+                    top:${msgPosition.top}; bottom:${msgPosition.bottom};
+                    z-index: ${zIndex};
+                ">
+                    <div class="${s.messagecontent}" style="${createInlineStyles(main) || ''} position: static;">
+                        ${content}
+                    </div>
+                </div></div>`,
+                id,
+                parentId,
+                emBase
+            );
+        }
+        this.state.display = true;
+        
         messageElement = document.getElementById(id);
         const boxElement: HTMLElement = messageElement.querySelector(
             `.${s.message}`
         );
         await this.animateAction(boxElement, time);
-        return await this.hide(doNotRemove);
+        await this.hide(doNotRemove);
+        this.state.display = false;
     };
 
     protected animateAction = async (element: HTMLElement, time: number) => {
@@ -146,7 +155,7 @@ class Message {
         const result: any = await new Promise((resolve) => {
             window.setTimeout(() => {
                 resolve(res);
-            }, (time || 3000) + 100);
+            }, (time || 3000));
         });
         result.target.classList.remove(directionFromClass);
         return onceTransitionEnd(result.target);
