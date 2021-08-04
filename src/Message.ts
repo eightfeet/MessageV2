@@ -104,8 +104,18 @@ class Message {
         const { id, zIndex, parentId, style, emBase } = this.state;
         const parentIdDom = document.getElementById(parentId);
         const { wrap, main } = style || {};
+
         let messageElement = document.getElementById(id);
+
         if (this.state.display) {
+            const contentElement = messageElement.querySelector(
+                `.${s.messagecontent}`
+            );
+            contentElement.innerHTML = content;
+            return;
+        }
+
+        if (messageElement) {
             this.show(content, time);
             console.warn('已创建message时 message.create === message.show');
             return Promise.resolve();
@@ -130,13 +140,14 @@ class Message {
             );
         }
         this.state.display = true;
-
+        
         messageElement = document.getElementById(id);
         const boxElement: HTMLElement = messageElement.querySelector(
             `.${s.message}`
         );
         await this.animateAction(boxElement, time);
         await this.hide(doNotRemove);
+        
         this.state.display = false;
     };
 
