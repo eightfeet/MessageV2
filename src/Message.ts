@@ -132,7 +132,7 @@ class Message {
         );
         await this.animateAction(boxElement, time);
         return await this.hide(doNotRemove).then(() => {
-            this.display = false;
+            setTimeout(() => this.display = false, 800);
         });
     };
 
