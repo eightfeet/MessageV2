@@ -47,10 +47,6 @@ export interface Parameters {
      * @memberof Parameters
      */
     emBase?: number;
-    /**
-     * 是否显示
-     */
-    display?: boolean;
 }
 
 
@@ -88,7 +84,6 @@ class Message {
             directionFrom,
             parentId,
             emBase,
-            display: false,
         };
     }
 
@@ -104,17 +99,7 @@ class Message {
         const { id, zIndex, parentId, style, emBase } = this.state;
         const parentIdDom = document.getElementById(parentId);
         const { wrap, main } = style || {};
-
         let messageElement = document.getElementById(id);
-
-        if (this.state.display) {
-            const contentElement = messageElement.querySelector(
-                `.${s.messagecontent}`
-            );
-            contentElement.innerHTML = content;
-            return;
-        }
-
         if (messageElement) {
             this.show(content, time);
             console.warn('已创建message时 message.create === message.show');
@@ -123,32 +108,27 @@ class Message {
 
         const { top, bottom, ...other } = wrap || {};
         const msgPosition = getMsgTopAndBottom((top as string), (bottom as string));
-        if (!this.state.display) {
-            await createDom(
-                `<div class="${s.wrap}"><div class="${s.message}"
-                style="position: ${parentIdDom ? 'absolute' : 'fixed'}; ${createInlineStyles(other) || ''}
-                    top:${msgPosition.top}; bottom:${msgPosition.bottom};
-                    z-index: ${zIndex};
-                ">
-                    <div class="${s.messagecontent}" style="${createInlineStyles(main) || ''} position: static;">
-                        ${content}
-                    </div>
-                </div></div>`,
-                id,
-                parentId,
-                emBase
-            );
-        }
-        this.state.display = true;
-        
+
+        await createDom(
+            `<div class="${s.wrap}"><div class="${s.message}"
+			style="position: ${parentIdDom ? 'absolute' : 'fixed'}; ${createInlineStyles(other) || ''}
+				top:${msgPosition.top}; bottom:${msgPosition.bottom};
+				z-index: ${zIndex};
+			">
+				<div class="${s.messagecontent}" style="${createInlineStyles(main) || ''} position: static;">
+					${content}
+				</div>
+            </div></div>`,
+            id,
+            parentId,
+            emBase
+        );
         messageElement = document.getElementById(id);
         const boxElement: HTMLElement = messageElement.querySelector(
             `.${s.message}`
         );
         await this.animateAction(boxElement, time);
-        await this.hide(doNotRemove);
-        
-        this.state.display = false;
+        return await this.hide(doNotRemove);
     };
 
     protected animateAction = async (element: HTMLElement, time: number) => {
@@ -166,7 +146,7 @@ class Message {
         const result: any = await new Promise((resolve) => {
             window.setTimeout(() => {
                 resolve(res);
-            }, (time || 3000));
+            }, time || 3000);
         });
         result.target.classList.remove(directionFromClass);
         return onceTransitionEnd(result.target);
