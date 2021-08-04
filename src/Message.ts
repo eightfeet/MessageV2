@@ -64,7 +64,6 @@ function getMsgTopAndBottom(topPos: string, bottomPos: string) {
 
 class Message {
     state: {} & Parameters;
-    display: boolean;
     /**
      *Creates an instance of message.
      * @param { Object } data
@@ -97,9 +96,6 @@ class Message {
      * @memberof Message
      */
     create = async (content?: string, time?: number, doNotRemove?: boolean) => {
-        console.log('this.display', this.display);
-        if (this.display) return;
-        this.display = true;
         const { id, zIndex, parentId, style, emBase } = this.state;
         const parentIdDom = document.getElementById(parentId);
         const { wrap, main } = style || {};
@@ -132,9 +128,7 @@ class Message {
             `.${s.message}`
         );
         await this.animateAction(boxElement, time);
-        return await this.hide(doNotRemove).then(() => {
-            this.display = false;
-        });
+        return await this.hide(doNotRemove);
     };
 
     protected animateAction = async (element: HTMLElement, time: number) => {
