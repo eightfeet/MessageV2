@@ -69,6 +69,7 @@ export function createDom(
 	parentId: string,
 	emBase: number,
 	msgRoot: HTMLElement,
+	directionFrom: 'top' | 'bottom'
 ) {
 	return new Promise<HTMLElement>((resolve, reject) => {
 		if (!target || !dom) {
@@ -84,7 +85,15 @@ export function createDom(
 		const div = document.createElement('div');
 		div.setAttribute('id', target);
 		setEmBase(div, parentId, emBase);
-		msgRoot.appendChild(div);
+		if (directionFrom === 'top') {
+			msgRoot.appendChild(div);
+		} else if (directionFrom === 'bottom') {
+			if (msgRoot.children[0]) {
+				msgRoot.insertBefore(div, msgRoot.children[0]);
+			} else {
+				msgRoot.appendChild(div);
+			}
+		}
 		div.innerHTML = saferDom;
 		resolve(div);
 	});

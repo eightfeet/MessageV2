@@ -108,7 +108,8 @@ class Message {
         const msgPosition = getMsgTopAndBottom((top as string), (bottom as string));
         this.counter++;
         const currentId = `${id}${this.counter}`;
-        const msgItemStyle = createInlineStyles(other) || '';
+        const msgItemStyle = createInlineStyles(wrap) || '';
+        
         let msgRoot = document.getElementById(id);
         if (!msgRoot) {
             msgRoot = document.createElement('div');
@@ -117,7 +118,7 @@ class Message {
             msgRoot.id = id;
             document.body.append(msgRoot);
         }
-
+        
         await createDom(
             `<div class="${s.message}"
 			style="position: ${parentIdDom ? 'absolute' : 'fixed'}
@@ -131,22 +132,26 @@ class Message {
             currentId,
             parentId,
             emBase,
-            msgRoot
+            msgRoot,
+            this.state.directionFrom
         );
 
         const MsgDom = document.getElementById(currentId);
         const boxElement: HTMLElement = MsgDom.querySelector(
             `.${s.message}`
         );
+        
+        boxElement.style.height = `${boxElement.offsetHeight}px`
         await this.animateAction(boxElement, time);
-        await removeDom(currentId);
+        boxElement.style.height = "0";
+        this.deadCounter++
+        // await removeDom(currentId);
         setTimeout(() => {
-            this.counter--;
             console.log(this.counter);
-            if (this.counter <= 0) {
+            if (this.counter - this.deadCounter <= 0) {
                 msgRoot.parentNode.removeChild(msgRoot);
             }
-        }, 400);
+        });
     };
 
     protected animateAction = async (element: HTMLElement, time: number) => {
@@ -158,7 +163,7 @@ class Message {
             window.setTimeout(() => {
                 element.classList.add(directionFromClass);
                 resolve(element);
-            }, 10);
+            }, 0);
         });
         const res = onceTransitionEnd(el);
         const result: any = await new Promise((resolve) => {
