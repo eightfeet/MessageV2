@@ -64,6 +64,8 @@ function getMsgTopAndBottom(topPos: string, bottomPos: string) {
 
 class Message {
     state: {} & Parameters;
+    counter: number;
+    deadCounter: number;
     /**
      *Creates an instance of message.
      * @param { Object } data
@@ -85,6 +87,8 @@ class Message {
             parentId,
             emBase,
         };
+        this.counter = 0;
+        this.deadCounter = 0;
     }
 
     /**
@@ -99,36 +103,50 @@ class Message {
         const { id, zIndex, parentId, style, emBase } = this.state;
         const parentIdDom = document.getElementById(parentId);
         const { wrap, main } = style || {};
-        let messageElement = document.getElementById(id);
-        if (messageElement) {
-            this.show(content, time);
-            console.warn('已创建message时 message.create === message.show');
-            return Promise.resolve();
-        }
 
         const { top, bottom, ...other } = wrap || {};
         const msgPosition = getMsgTopAndBottom((top as string), (bottom as string));
+        this.counter++;
+        const currentId = `${id}${this.counter}`;
+        const msgItemStyle = createInlineStyles(other) || '';
+        let msgRoot = document.getElementById(id);
+        if (!msgRoot) {
+            msgRoot = document.createElement('div');
+            msgRoot.setAttribute('style', msgItemStyle);
+            msgRoot.classList.add(s.msgroot)
+            msgRoot.id = id;
+            document.body.append(msgRoot);
+        }
 
         await createDom(
-            `<div class="${s.wrap}"><div class="${s.message}"
-			style="position: ${parentIdDom ? 'absolute' : 'fixed'}; ${createInlineStyles(other) || ''}
+            `<div class="${s.message}"
+			style="position: ${parentIdDom ? 'absolute' : 'fixed'}
 				top:${msgPosition.top}; bottom:${msgPosition.bottom};
 				z-index: ${zIndex};
 			">
 				<div class="${s.messagecontent}" style="${createInlineStyles(main) || ''} position: static;">
 					${content}
 				</div>
-            </div></div>`,
-            id,
+            </div>`,
+            currentId,
             parentId,
-            emBase
+            emBase,
+            msgRoot
         );
-        messageElement = document.getElementById(id);
-        const boxElement: HTMLElement = messageElement.querySelector(
+
+        const MsgDom = document.getElementById(currentId);
+        const boxElement: HTMLElement = MsgDom.querySelector(
             `.${s.message}`
         );
         await this.animateAction(boxElement, time);
-        return await this.hide(doNotRemove);
+        await removeDom(currentId);
+        setTimeout(() => {
+            this.counter--;
+            console.log(this.counter);
+            if (this.counter <= 0) {
+                msgRoot.parentNode.removeChild(msgRoot);
+            }
+        }, 400);
     };
 
     protected animateAction = async (element: HTMLElement, time: number) => {
@@ -150,74 +168,6 @@ class Message {
         });
         result.target.classList.remove(directionFromClass);
         return onceTransitionEnd(result.target);
-    };
-
-    /**
-     *
-     * @description 移除message
-     * @memberof Message
-     */
-    protected remove = () => {
-        if (!document.getElementById(this.state.id)) {
-            throw '未创建Message';
-        }
-        return removeDom(this.state.id);
-    };
-
-
-    /**
-     *
-     * 显示message
-     * @param {string} content 内容
-     * @param {number} time 时间
-     * @memberof Message
-     */
-    protected show = (content?: string, time?: number) => {
-        const { id } = this.state;
-        const messageElement = document.getElementById(id);
-        if (!messageElement) {
-            throw '未创建Message';
-        }
-        const boxElement: HTMLElement = messageElement.querySelector(`.${s.message}`);
-        const contentElement = messageElement.querySelector(
-            `.${s.messagecontent}`
-        );
-        contentElement.innerHTML = content;
-        return this.animateAction(boxElement, time);
-    };
-
-    /**
-     *
-     * @description 隐藏message
-     * @memberof Message
-     */
-    protected unvisible = async () => {
-        const { id, directionFrom } = this.state;
-        const directionFromClass =
-            directionFrom === 'top' ? s.messageshowbottom : s.messageshowtop;
-        const messageElement = document.getElementById(id);
-        const boxElement_1: HTMLElement = await new Promise((resolve, reject) => {
-            const boxElement: HTMLElement = messageElement.querySelector(`.${s.message}`);
-            if (!messageElement) {
-                reject('未创建Message');
-                return;
-            }
-            boxElement.classList.remove(directionFromClass);
-            resolve(boxElement);
-        });
-        return onceTransitionEnd(boxElement_1);
-    };
-
-    /**
-     * @description 隐藏或移除message
-     * @param {Boolean} doNotRemove 是否移除message，doNotRemove=true时仅隐藏当前message而不移除当前messageDom
-     * @memberof Message
-     */
-    protected hide = (doNotRemove) => {
-        if (doNotRemove === true) {
-            return this.unvisible();
-        }
-        return this.remove();
     };
 }
 

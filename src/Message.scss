@@ -14,7 +14,7 @@ fixpx
     top: 0;
 }
 .message {
-    position: fixed;
+    position: relative;
     display: inline-block;
     width: 100%;
     max-width: 80%;
@@ -24,6 +24,8 @@ fixpx
     opacity: 0;
     text-align: center;
     box-sizing: border-box;
+    pointer-events: none;
+    margin-bottom: 2%;
 }
 
 .messagecontent {
@@ -46,4 +48,12 @@ fixpx
     left: -10;
     transform: translate(-50%, fixpx(30));
     opacity: 1;
+}
+
+.msgroot {
+    position: fixed;
+    pointer-events: none;
+    width: 100%;
+    left: 0;
+    top: 0;
 }
