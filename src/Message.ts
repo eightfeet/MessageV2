@@ -68,8 +68,6 @@ function getMsgTopAndBottom(topPos: string, bottomPos: string) {
 
 class Message {
     state: {} & Parameters;
-    timerA: number;
-    timerB: number;
     /**
      *Creates an instance of message.
      * @param { Object } data
@@ -107,7 +105,7 @@ class Message {
         const parentIdDom = document.getElementById(parentId);
         const { wrap, main } = style || {};
         let messageElement = document.getElementById(id);
-        if (messageElement) {
+        if (this.state.display) {
             this.show(content, time);
             console.warn('已创建message时 message.create === message.show');
             return Promise.resolve();
@@ -148,16 +146,14 @@ class Message {
                 ? s.messageshowbottom
                 : s.messageshowtop;
         const el: HTMLElement = await new Promise((resolve) => {
-            window.clearTimeout(this.timerA);
-            this.timerA = window.setTimeout(() => {
+            window.setTimeout(() => {
                 element.classList.add(directionFromClass);
                 resolve(element);
             }, 10);
         });
         const res = onceTransitionEnd(el);
         const result: any = await new Promise((resolve) => {
-            window.clearTimeout(this.timerB);
-            this.timerB = window.setTimeout(() => {
+            window.setTimeout(() => {
                 resolve(res);
             }, (time || 3000));
         });
