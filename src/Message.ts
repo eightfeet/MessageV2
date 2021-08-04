@@ -97,6 +97,7 @@ class Message {
      * @memberof Message
      */
     create = async (content?: string, time?: number, doNotRemove?: boolean) => {
+        console.log('this.display', this.display);
         if (this.display) return;
         this.display = true;
         const { id, zIndex, parentId, style, emBase } = this.state;
@@ -132,7 +133,7 @@ class Message {
         );
         await this.animateAction(boxElement, time);
         return await this.hide(doNotRemove).then(() => {
-            setTimeout(() => this.display = false, 800);
+            this.display = false;
         });
     };
 
