@@ -42,10 +42,6 @@ export interface Parameters {
      * @memberof Parameters
      */
     emBase?: number;
-    /**
-     * 是否显示
-     */
-    display?: boolean;
 }
 declare class Message {
     state: {} & Parameters;
@@ -63,7 +59,7 @@ declare class Message {
      * @param {boolean} doNotRemove 是否移除
      * @memberof Message
      */
-    create: (content?: string, time?: number, doNotRemove?: boolean) => Promise<void>;
+    create: (content?: string, time?: number, doNotRemove?: boolean) => Promise<any>;
     protected animateAction: (element: HTMLElement, time: number) => Promise<any>;
     /**
      *
