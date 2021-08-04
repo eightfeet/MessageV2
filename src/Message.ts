@@ -146,7 +146,7 @@ class Message {
         const result: any = await new Promise((resolve) => {
             window.setTimeout(() => {
                 resolve(res);
-            }, time || 3000);
+            }, (time || 3000) + 100);
         });
         result.target.classList.remove(directionFromClass);
         return onceTransitionEnd(result.target);
