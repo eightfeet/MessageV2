@@ -64,7 +64,7 @@ class Message {
 				)}`, // messageId 不传自动生成 message + 时间戳 + 100以内的随机数
 			zIndex: zIndex || 10000, // 层级
 			style: style || null, // 基础样式
-			directionFrom,
+			directionFrom: directionFrom === 'bottom' ? 'bottom' : 'top',
 			emBase
 		};
 		this.counter = 0;
@@ -90,6 +90,7 @@ class Message {
 		if (!msgRoot) {
 			msgRoot = document.createElement('div');
 			msgRoot.setAttribute('style', msgItemStyle);
+			msgRoot.style.zIndex = `${this.state.zIndex}`;
 			msgRoot.classList.add(s.msgroot);
 			msgRoot.id = id;
 			document.body.append(msgRoot);
