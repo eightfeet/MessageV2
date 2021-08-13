@@ -123,7 +123,6 @@ class Message {
 		this.deadCounter++;
 		// await removeDom(currentId);
 		setTimeout(() => {
-			console.log(this.counter);
 			if (this.counter - this.deadCounter <= 0) {
 				msgRoot.parentNode.removeChild(msgRoot);
 			}
