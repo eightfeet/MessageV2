@@ -73,7 +73,7 @@
             newMessage.state.style.wrap = frombottom;
         }
         
-        return newMessage.create(msg || 'message!', 100000).then(function(){
+        return newMessage.create(msg || 'message!').then(function(){
             console.log('then do...');
         });
     }
