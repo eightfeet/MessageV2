@@ -29,7 +29,6 @@ fixpx
 .messagecontent {
     padding: fixpx(15) fixpx(20);
     background-color: rgba(0,0,0,.6);
-    max-width: 80%;
     word-break: break-all;
     color: #eee;
     font-size: 0.8em;
@@ -39,13 +38,11 @@ fixpx
 }
 
 .messageshowtop {
-    left: -10;
     transform: translate(0, fixpx(-30));
     opacity: 1;
 }
 
 .messageshowbottom {
-    left: -10;
     transform: translate(0, fixpx(30));
     opacity: 1;
 }

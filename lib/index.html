@@ -50,11 +50,11 @@
             newMessage.state.style.wrap = frombottom;
         }
         
-        return newMessage.create(msg || 'message!', 100000).then(function(){
+        return newMessage.create(msg || 'message!', 1000000).then(function(){
             console.log('then do...');
         });
     }
 
     btn.onclick = function(){
-        create(`<div style="color: yellow" onClick="alert(111)">11:48:20 AM</div>`);
+        create(`<div style="color: yellow" onClick="alert(111)">3:28:25 PM</div>`);
     }</script></html>
